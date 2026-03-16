@@ -1,0 +1,14 @@
+{
+  "name": "B2B Product Populator",
+  "id": "1615520914654928521",
+  "api": "1.0.0",
+  "editorType": ["figma"],
+  "main": "code.js",
+  "documentAccess": "dynamic-page",
+  "networkAccess": {
+    "allowedDomains": [
+      "https://raw.githubusercontent.com"
+    ],
+    "reasoning": "Loads product images hosted on GitHub."
+  }
+}

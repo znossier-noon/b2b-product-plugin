@@ -1,0 +1,16 @@
+{
+  "name": "b2b-product-plugin",
+  "version": "2.0.0",
+  "private": true,
+  "scripts": {
+    "build:catalog": "node scripts/build-ui.js",
+    "build:ts": "tsc",
+    "build": "node scripts/build-ui.js && tsc && node scripts/inject-html.js",
+    "watch": "tsc --watch"
+  },
+  "devDependencies": {
+    "@figma/plugin-typings": "^1.123.0",
+    "sharp": "^0.34.5",
+    "typescript": "^5.0.0"
+  }
+}
