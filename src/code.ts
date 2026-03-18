@@ -51,7 +51,8 @@ async function loadImageFromUrl(
       cache.set(url, image);
       return image;
     }
-  } catch {}
+  } catch (e) {
+  }
   return null;
 }
 
@@ -241,17 +242,15 @@ function applyImageToCard(card: CardCandidate, image: Image): boolean {
   try {
     const existingFills = fillTarget.fills;
     if (Array.isArray(existingFills)) {
-      const idx = (existingFills as Paint[]).findIndex((f: Paint) => f.type === "IMAGE");
-      if (idx >= 0) {
-        const cloned = (existingFills as Paint[]).map((f: Paint) => ({ ...f }));
-        (cloned[idx] as Record<string, unknown>).imageHash = image.hash;
-        fillTarget.fills = cloned;
-        return true;
-      }
+      const paints = existingFills as Paint[];
+      const nonImageFills = paints.filter((f: Paint) => f.type !== "IMAGE");
+      fillTarget.fills = [...nonImageFills, { type: "IMAGE", imageHash: image.hash, scaleMode: "FILL" } as ImagePaint];
+      return true;
+    } else {
     }
     fillTarget.fills = [{ type: "IMAGE", imageHash: image.hash, scaleMode: "FILL" } as ImagePaint];
     return true;
-  } catch {
+  } catch (e) {
     return false;
   }
 }
@@ -302,7 +301,7 @@ figma.ui.onmessage = async (msg: {
   let imageSetCount = 0;
   const MAX_CONCURRENT = 4;
 
-  async function processImage(assignment: typeof assignments[0]): Promise<void> {
+  async function processImage(assignment: typeof assignments[0], idx: number): Promise<void> {
     const { card, product } = assignment;
     if (!product.thumbnail) return;
     const img = await loadImageFromUrl(product.thumbnail, imageCache);
@@ -310,8 +309,8 @@ figma.ui.onmessage = async (msg: {
   }
 
   const running: Promise<void>[] = [];
-  for (const item of assignments) {
-    const p = processImage(item);
+  for (let i = 0; i < assignments.length; i++) {
+    const p = processImage(assignments[i], i);
     running.push(p);
     if (running.length >= MAX_CONCURRENT) {
       await Promise.race(running);
