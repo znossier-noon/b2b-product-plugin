@@ -4,6 +4,7 @@
   "api": "1.0.0",
   "editorType": ["figma"],
   "main": "code.js",
+  "icon": "plugin-assets/icon-128.png",
   "documentAccess": "dynamic-page",
   "networkAccess": {
     "allowedDomains": [
