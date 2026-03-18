@@ -155,6 +155,13 @@ function randomIntInclusive(min: number, max: number): number {
   return Math.floor(Math.random() * (hi - lo + 1)) + lo;
 }
 
+function chooseB2BQty(): number {
+  // Prefer "comfortable" bulk quantities common in B2B ordering.
+  // 70% of the time choose a multiple of 10 (10..100). Otherwise any 1..100.
+  if (Math.random() < 0.7) return randomIntInclusive(1, 10) * 10;
+  return randomIntInclusive(1, 100);
+}
+
 async function ensureFontLoaded(node: TextNode): Promise<void> {
   const fontName = node.fontName;
   if (fontName === figma.mixed) {
@@ -177,7 +184,7 @@ async function applyTextToCard(card: CardCandidate, product: Product, currency: 
   const qtyNode = findChildByName(card, "product-qty");
   if (qtyNode?.type === "TEXT") {
     await ensureFontLoaded(qtyNode);
-    const qty = Number.isFinite(product.qty) ? Math.max(0, Math.floor(product.qty as number)) : randomIntInclusive(1, 25);
+    const qty = Number.isFinite(product.qty) ? Math.max(0, Math.floor(product.qty as number)) : chooseB2BQty();
     qtyNode.characters = String(qty);
   }
 

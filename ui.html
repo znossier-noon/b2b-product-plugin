@@ -416,7 +416,7 @@
           <tr><td><code>product-reviews</code></td><td>Review count</td></tr>
           <tr><td><code>product-description</code></td><td>Short description</td></tr>
           <tr><td><code>product-brand</code></td><td>Brand name</td></tr>
-          <tr><td><code>product-qty</code></td><td>Quantity (random 1–25)</td></tr>
+          <tr><td><code>product-qty</code></td><td>Quantity (random 1–100, usually multiples of 10)</td></tr>
           <tr><td><code>product-discount</code></td><td>Discount percentage</td></tr>
           <tr><td><code>original-price</code></td><td>Strikethrough price</td></tr>
         </tbody>
@@ -708,7 +708,10 @@
 
         var base = CATALOG_IMAGE_BASE.replace(/\/$/, '');
         return selected.map(function(p) {
-          var qty = Math.floor(Math.random() * 25) + 1; // 1..25
+          // 70%: multiples of 10 (10..100). 30%: any number (1..100).
+          var qty = (Math.random() < 0.7)
+            ? (Math.floor(Math.random() * 10) + 1) * 10
+            : (Math.floor(Math.random() * 100) + 1);
           return {
             title: p.title,
             price: p.price,
