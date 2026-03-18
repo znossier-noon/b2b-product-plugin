@@ -35,6 +35,7 @@ In Figma: **Plugins → Development → Import plugin from manifest** → choose
 | `product-reviews` | Review count |
 | `product-description` | Short description |
 | `product-brand` | Brand name |
+| `product-qty` | Quantity (random 1–25) |
 | `product-discount` | Discount % |
 | `original-price` | Strikethrough price |
 

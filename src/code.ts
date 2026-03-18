@@ -23,6 +23,7 @@ interface Product {
   rating: number;
   reviewCount: number;
   thumbnail: string;
+  qty?: number;
   description?: string;
   originalPrice?: number;
   discountPercentage?: number;
@@ -147,6 +148,13 @@ function shuffle<T>(arr: T[]): T[] {
   return arr;
 }
 
+function randomIntInclusive(min: number, max: number): number {
+  const lo = Math.ceil(min);
+  const hi = Math.floor(max);
+  if (hi < lo) return lo;
+  return Math.floor(Math.random() * (hi - lo + 1)) + lo;
+}
+
 async function ensureFontLoaded(node: TextNode): Promise<void> {
   const fontName = node.fontName;
   if (fontName === figma.mixed) {
@@ -165,6 +173,13 @@ async function applyTextToCard(card: CardCandidate, product: Product, currency: 
 
   const titleNode = findChildByNames(card, TITLE_LAYER_NAMES);
   if (titleNode?.type === "TEXT") { await ensureFontLoaded(titleNode); titleNode.characters = product.title; }
+
+  const qtyNode = findChildByName(card, "product-qty");
+  if (qtyNode?.type === "TEXT") {
+    await ensureFontLoaded(qtyNode);
+    const qty = Number.isFinite(product.qty) ? Math.max(0, Math.floor(product.qty as number)) : randomIntInclusive(1, 25);
+    qtyNode.characters = String(qty);
+  }
 
   const priceNode = findChildByName(card, "product-price");
   if (priceNode?.type === "TEXT") { await ensureFontLoaded(priceNode); priceNode.characters = `${sign}${product.price.toFixed(2)}`; }
